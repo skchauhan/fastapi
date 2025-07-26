@@ -55,3 +55,10 @@ def get_annoated_val(item: Annotated[str|int, "testing"]):
 def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
     return {"username": username, "password": password}
 
+class FormData(BaseModel):
+    username: str
+    password: str
+
+@app.post('/user-login')
+def userLogin(data: Annotated[FormData, Form()]):
+    return data
