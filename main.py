@@ -1,8 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, Path, Form
 from enum import Enum
 from pydantic import BaseModel
+import os
+from typing import Annotated
 
 app = FastAPI()
+
 
 class Item(BaseModel):
     name: str
@@ -32,3 +35,23 @@ async def create_item(item: Item):
         price_with_tax = item.price + item.tax
         item_dict.update({"price_with_tax": price_with_tax})
     return item_dict
+
+#set/get environment
+@app.get('/env-variable')
+async def get_enviornment_variable():
+    my_name = os.getenv('path', 'Not Found')
+    return {"env_variable": my_name}
+
+def test():
+    return {"name":"sunil", "address": "Noida"}
+
+#annotated
+@app.get('/annotated/')
+def get_annoated_val(item: Annotated[str|int, "testing"]):
+    return {"item": item}
+
+#login user
+@app.post('/login')
+def login(username: Annotated[str, Form()], password: Annotated[str, Form()]):
+    return {"username": username, "password": password}
+
