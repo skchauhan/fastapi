@@ -1,8 +1,9 @@
-from fastapi import FastAPI, Depends, Path, Form
+from fastapi import FastAPI, Depends, Path, Form, File, UploadFile
 from enum import Enum
 from pydantic import BaseModel
 import os
 from typing import Annotated
+from fastapi.responses import JSONResponse, HTMLResponse
 
 app = FastAPI()
 
@@ -62,3 +63,26 @@ class FormData(BaseModel):
 @app.post('/user-login')
 def userLogin(data: Annotated[FormData, Form()]):
     return data
+
+#HTTP Response
+@app.get('/response')
+def response_test():
+    data = {"name":"Sunil", "address":"Delhi"}
+    return JSONResponse(content=data, status_code=201)
+
+#HTML response
+@app.get("/html-response")
+async def main():
+    content = """
+<body>
+<form action="/files/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+<form action="/uploadfiles/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+</body>
+    """
+    return HTMLResponse(content=content)
